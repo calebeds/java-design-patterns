@@ -68,9 +68,10 @@ class HtmlBuilder {
         root.setName(rootName);
     }
 
-    public void addChild(String childName, String childText) {
+    public HtmlBuilder addChild(String childName, String childText) {
         HtmlElement element = new HtmlElement(childName, childText);
         root.getElements().add(element);
+        return this;
     }
 
     public void clear() {
@@ -100,8 +101,9 @@ public class Builder {
 //
 //        System.out.println(stringBuilder);
         HtmlBuilder builder = new HtmlBuilder("ul");
-        builder.addChild("li", "hello");
-        builder.addChild("li", "world");
+        builder
+                .addChild("li", "hello")
+                .addChild("li", "world");
         System.out.println(builder);
     }
 }
