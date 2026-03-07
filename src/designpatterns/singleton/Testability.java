@@ -13,7 +13,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SingletonDatabase {
+interface Database {
+    int getPopulation(String name);
+}
+
+class SingletonDatabase implements Database {
     private static final SingletonDatabase INSTANCE = new SingletonDatabase();
 
     private static int instanceCount = 0;
@@ -62,6 +66,39 @@ class SingletonRecordFinder {
     }
 }
 
+class ConfigurableRecordFinder {
+    private Database database;
+
+    public ConfigurableRecordFinder(Database database) {
+        this.database = database;
+    }
+    public int getTotalPopulation(List<String> names) {
+        int result = 0;
+        for(String name: names) {
+            result += database.getPopulation(name);
+        }
+
+        return result;
+    }
+
+}
+
+class DummyDatabase implements Database {
+
+    private Dictionary<String, Integer> data = new Hashtable<>();
+
+    public DummyDatabase() {
+        this.data.put("alpha", 1);
+        this.data.put("beta", 2);
+        this.data.put("gamma", 3);
+    }
+
+    @Override
+    public int getPopulation(String name) {
+        return data.get(name);
+    }
+}
+
 public class Testability {
     @Test
     public void singletonTotalPopulationTest() {
@@ -72,7 +109,10 @@ public class Testability {
         assertEquals(22490482+23016800, totalPopulation);
     }
 
-    public static void main(String[] args) {
-
+    @Test
+    public void dependentPopulationTest() {
+        DummyDatabase db = new DummyDatabase();
+        ConfigurableRecordFinder recordFinder = new ConfigurableRecordFinder(db);
+        assertEquals(4, recordFinder.getTotalPopulation(List.of("alpha", "gama")));
     }
 }
