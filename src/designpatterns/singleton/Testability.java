@@ -110,6 +110,16 @@ public class Testability {
     }
 
     @Test
+    public void singletonTotalPopulationTest_DI() {
+        SingletonDatabase singletonDatabase = SingletonDatabase.getInstance();
+        ConfigurableRecordFinder configurableRecordFinder = new ConfigurableRecordFinder(singletonDatabase);
+        List<String> names = List.of("Seoul", "Mexico City");
+        int totalPopulation = configurableRecordFinder.getTotalPopulation(names);
+
+        assertEquals(22490482+23016800, totalPopulation);
+    }
+
+    @Test
     public void dependentPopulationTest() {
         DummyDatabase db = new DummyDatabase();
         ConfigurableRecordFinder recordFinder = new ConfigurableRecordFinder(db);
