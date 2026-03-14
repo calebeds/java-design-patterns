@@ -1,5 +1,7 @@
 package designpatterns.nullobject;
 
+import java.lang.reflect.Proxy;
+
 interface Log {
     void info(String msg);
     void warn(String msg);
@@ -48,9 +50,25 @@ final class NullLog implements Log {
 
 
 public class NullObjectPattern {
+
+    @SuppressWarnings("unchecked")
+    static <T> T noOp(Class<T> interf) {
+        return (T) Proxy.newProxyInstance(interf.getClassLoader(),
+                new Class<?>[]{ interf },
+                (proxy, method, args) -> {
+                  if(method.getReturnType().equals(Void.TYPE)) {
+                      return null;
+                  } else {
+                      return method.getReturnType().getConstructor().newInstance();
+                  }
+                }
+        );
+    }
+
     public static void main(String[] args) {
-        Log consoleLog = new NullLog();
-        BankAccount account = new BankAccount(consoleLog);
+//        Log consoleLog = new NullLog();
+         Log log = noOp(Log.class);
+        BankAccount account = new BankAccount(log);
 
         account.deposit(100);
     }
