@@ -1,4 +1,4 @@
-package designpatterns.visitor.doubledispatch.reflectivevisitor;
+package designpatterns.visitor.doubledispatch;
 
 interface ExpressionVisitor {
     void visit(DoubleExpression doubleExpression);
